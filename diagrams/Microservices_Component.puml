@@ -1,0 +1,62 @@
+@startuml
+title SmartHome Component Diagram
+
+top to bottom direction
+
+!include C4/C4_Component.puml
+
+Container_Boundary(SmartHomeSystem, "SmartHome System") {
+  Container(DeviceManagement, "Device Management Service", "Java, Spring", "Управление списком устройств пользователя")
+  Container(DeviceManagementDb, "Database", "PostgreSQL", "Хранение информации об устройствах")
+  Container(Telemetry, "Telemetry Service", "Java, Spring", "Сервис сбора данных датчиков")
+  Container(TelemetryDb, "Telemetry DB", "PostgreSQL", "Хранит информацию о зарегистрированных датчиках")
+
+  Container(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+}
+
+Container(DeviceManagement, "Web Application", "Java, Spring") {
+  Component(AddHomeCommandController, "Add Home Command controller", "API контроллера команды добавления нового")
+  Component(RemoveHomeCommandController, "Remove Home Command controller", "API контроллера команды добавления нового")
+  Component(AddDeviceCommandController, "Add Device Command controller", "API контроллера команды добавления нового")
+  Component(RemoveDeviceCommandController, "Remove Device Command controller", "API контроллера команды добавления нового")
+  Component(HomeQueryController, "Home Query controller", "API контроллера запросов для получения информации об домах")
+  Component(DeviceQueryController, "Device Query controller", "API контроллера запросов для получения информации об устройствах")
+
+  Component(AddHomeCommandHandler, "Add Home Command handler", "Обработчик команды добавления нового дома")
+  Component(RemoveHomeCommandHandler, "Remove Home Command handler", "Обработчик команды удаления дома")
+  Component(AddDeviceCommandHandler, "Add Device Command handler", "Обработчик команды добавления нового устройства")
+  Component(RemoveDeviceCommandHandler, "Remove Device Command handler", "Обработчик команды удаления устройства")
+
+  Component(HomeRepository, "Home Repository", "Репозиторий для работы с таблицей home")
+  Component(DeviceRepository, "Device Repository", "Репозиторий для работы с таблицей device")
+
+  Component(HomeQueryRepository, "Home Query Repository", "Репозиторий для получения данных о домах")
+  Component(DeviceQueryRepository, "Device Query Repository", "Репозиторий для получения данных об устройствах")
+}
+
+Container(Telemetry, "Spring boot Application", "Java, Spring") {
+    Component(DeviceEventHandler, "Device Query Repository", "Репозиторий для получения данных об устройствах")
+}
+
+Rel(AddHomeCommandController,AddHomeCommandHandler,"Вызов обработчика команды")
+Rel(RemoveHomeCommandController,RemoveHomeCommandHandler,"Вызов обработчика команды")
+Rel(AddDeviceCommandController,AddDeviceCommandHandler,"Вызов обработчика команды")
+Rel(RemoveDeviceCommandController,RemoveDeviceCommandHandler,"Вызов обработчика команды")
+
+Rel(HomeQueryController,HomeQueryRepository,"Вызов репозитория")
+Rel(DeviceQueryController,DeviceQueryRepository,"Вызов репозитория")
+
+Rel(AddHomeCommandHandler,HomeRepository,"Добавление дома в таблицу бд")
+Rel(RemoveHomeCommandHandler,HomeRepository,"Удаление дома из таблицы в бд")
+Rel(AddDeviceCommandHandler,DeviceRepository,"Добавление устройства в таблицу бд")
+Rel(RemoveDeviceCommandHandler,DeviceRepository,"Удаление устройства из таблицы в бд")
+
+Rel(HomeRepository,DeviceManagementDb,"Вызов бд")
+Rel(DeviceRepository,DeviceManagementDb,"Вызов бд")
+Rel(HomeQueryRepository,DeviceManagementDb,"Получение данных из бд")
+Rel(DeviceQueryRepository,DeviceManagementDb,"Получение данных из бд")
+
+Rel(AddDeviceCommandHandler,Kafka,"Посылка команды на регистрацию нового устройства")
+Rel(RemoveDeviceCommandHandler,Kafka,"Посылка команды на удаление устройства")
+
+@enduml
