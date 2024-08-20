@@ -3,18 +3,11 @@ title SmartHome Telemetry Service ER Diagram
 
 top to bottom direction
 
-entity Device {
-    * id: uuid
-    --
-    * user_id: uuid
-    * model: string
-}
-
 entity Sensor {
     * device_id: uuid
+    * user_id: uuid
+    * model: string
     --
     * url: string
 }
-
-Sensor }|..|| Device
 @enduml

@@ -6,7 +6,7 @@ top to bottom direction
 entity Device {
   * id: uuid
   --
-  * house_id: uuid
+  * home_id: uuid
   * type: enum (heating_system, camera, gate, lamp etc...)
   * name: string
   * model: string
@@ -14,7 +14,7 @@ entity Device {
   * status: enum (on, off, turning_off, turning_on, start_registering, start_removing)
 }
 
-entity House {
+entity Home {
   * id: uuid
   --
   * user_id: uuid
@@ -28,6 +28,6 @@ entity User {
   * name: string
 }
 
-House }|..|| User
-Device }|..|| House
+Home }|..|| User
+Device }|..|| Home
 @enduml
