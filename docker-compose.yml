@@ -1,4 +1,4 @@
-name: 'ai-chat-ollama-spring-boot'
+name: 'architecture-sprint-3'
 version: "3.7"
 services:
   zookeeper:
