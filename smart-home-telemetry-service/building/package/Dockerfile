@@ -1,5 +1,4 @@
-ARG DOCKER_REGISTRY
-FROM ${DOCKER_REGISTRY}/dhub/library/ibm-semeru-runtimes:open-21.0.1_12-jre-jammy
+FROM ibm-semeru-runtimes:open-21.0.1_12-jre-jammy
 
 ARG NAME=app
 ARG ID=1001
