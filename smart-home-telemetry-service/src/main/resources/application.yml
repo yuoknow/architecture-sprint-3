@@ -1,0 +1,18 @@
+server:
+  port: 8081
+spring:
+  application.name: smart-home-telemetry-service
+  datasource:
+    username: postgres
+    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+
+camel:
+  component:
+    kafka:
+      brokers: ${BOOTSTRAP_SERVERS:http://localhost:9093}
+
+logging:
+  level:
+    org.apache.camel: DEBUG

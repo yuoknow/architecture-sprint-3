@@ -1,0 +1,97 @@
+asyncapi: 3.0.0
+info:
+  title: Telemetry Service
+  version: 1.0.0
+defaultContentType: application/json
+operations:
+  registerSensorCommand:
+    description: Регистрация нового сенсора
+    action: receive
+    channel:
+      $ref: '#/channels/sensor-command'
+    messages:
+      - $ref: '#/channels/sensor-command/messages/SensorCommand'
+  removeSensorCommand:
+    description: Удаление сенсора
+    action: receive
+    channel:
+      $ref: '#/channels/sensor-command'
+    messages:
+      - $ref: '#/channels/sensor-command/messages/SensorCommand'
+  registerSensorEvent:
+    description: Сенсор зарегистрирован
+    action: send
+    channel:
+      $ref: '#/channels/sensor-event'
+    messages:
+      - $ref: '#/channels/sensor-event/messages/SensorEvent'
+  removeSensorEvent:
+    description: Сенсор удален
+    action: send
+    channel:
+      $ref: '#/channels/sensor-event'
+    messages:
+      - $ref: '#/channels/sensor-event/messages/SensorEvent'
+channels:
+  sensor-command:
+    description: Топик с командами для сенсоров
+    address: sensor-command
+    messages:
+      SensorCommand:
+        $ref: '#/components/messages/SensorCommand'
+  sensor-event:
+    description: Топик с событиями от сенсоров
+    address: sensor-event
+    messages:
+      SensorEvent:
+        $ref: '#/components/messages/SensorEvent'
+components:
+  messages:
+    SensorEvent:
+      description: Событие сенсоров
+      payload:
+        deviceId:
+          description: id устройства
+          type: string
+          format: uuid
+        eventType:
+          description: Тип события
+          type: string
+          enum:
+            - REGISTERED
+            - REMOVED
+            - ERROR
+    SensorCommand:
+      description: Команда для сенсоров
+      payload:
+        type: object
+        properties:
+          commandType:
+            type: string
+            enum:
+              - REGISTER
+              - REMOVE
+            description: Тип команды
+          registerSensorCommand:
+            type: object
+            description: Команда на регистрацию нового сенсора
+            properties:
+              deviceId:
+                description: id устройства
+                type: string
+                format: uuid
+              userId:
+                description: id владельца
+                type: string
+                format: uuid
+              model:
+                description: Модель устройства
+                type: string
+              url:
+                description: Урл для обращения к сенсору
+                type: string
+          removeSensorCommand:
+            deviceId:
+              description: id устройства
+              type: string
+              format: uuid

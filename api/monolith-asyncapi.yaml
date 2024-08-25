@@ -1,0 +1,70 @@
+asyncapi: 3.0.0
+info:
+  title: SmartHome Monolith Service
+  version: 1.0.0
+defaultContentType: application/json
+operations:
+  deviceRegisteredEvent:
+    description: Добавлено устройство
+    action: receive
+    channel:
+      $ref: '#/channels/device-event'
+    messages:
+      - $ref: '#/channels/device-event/messages/DeviceEvent'
+  deviceRemovedEvent:
+    description: Удалено устройство
+    action: receive
+    channel:
+      $ref: '#/channels/device-event'
+    messages:
+      - $ref: '#/channels/device-event/messages/DeviceEvent'
+channels:
+  device-event:
+    description: Топик с событиями устройств
+    address: sensor-event
+    messages:
+      DeviceEvent:
+        $ref: '#/components/messages/DeviceEvent'
+components:
+  messages:
+    DeviceEvent:
+      description: Событие устройств
+      payload:
+        eventType:
+          description: Тип события
+          type: string
+          enum:
+            - REGISTERED
+            - REMOVED
+        device:
+          type: object
+          properties:
+            deviceId:
+              description: id устройства
+              type: string
+              format: uuid
+            homeId:
+              description: id дома устройства
+              type: string
+              format: uuid
+            userId:
+              description: id владельца
+              type: string
+              format: uuid
+            deviceType:
+              description: Тип устройства
+              type: string
+              enum:
+                - HEATING_SYSTEM
+                - CAMERA
+                - GATE
+                - LAMP
+            model:
+              description: Модель устройства
+              type: string
+            serialNumber:
+              description: Серийный номер устройства
+              type: string
+            url:
+              description: Урл для обращения к устройству
+              type: string

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1671820915"
+      author: azhmylev
+      runOnChange: false
+      changes:
+        sql:
+          sql: >
+            insert into users (user_id,name)
+            values ('a60ae84d-960f-49de-8ae8-4d960ff9de00', 'Test user');
+            
+            insert into homes (home_id,user_id,name,address)
+            values ('0a2675b2-f5a7-49f5-a675-b2f5a779f513', 'a60ae84d-960f-49de-8ae8-4d960ff9de00', 'Test home', 'Privet street');    
+

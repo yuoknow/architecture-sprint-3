@@ -99,3 +99,42 @@ minikube delete
 [System Context diagram](./diagrams/Monolith_Context.puml)
 
 ## Архитектура To Be
+### Архитектура
+* Язык программирования: **Java**
+* База данных: **PostgreSQL**
+* Архитектура: **Микросервисная**, все компоненты системы (обработка запросов, бизнес-логика, работа с данными) разделены на отдельные приложения с собственной базой данных. 
+Общение между сервисами происходит через обмен сообщениями в кафке
+* Взаимодействие: **Асинхронное**, запросы обрабатываются асинхронно.
+* Масштабируемость: **Не ограничена**, каждую часть системы можно масштабировать отдельно.
+* Развертывание: Остановка всего приложения не требуется
+### Описание микросервисов
+* Gateway API - gateway, перенаправляет запросы на нужный сервис, аутентифицирует и авторизует запросы через auth-service. При успешной аутентификации добавляет заголовок userId
+* Auth Service - сервис аутентификации и авторизации
+* Device Management Service - сервис управления списком устройств пользователя. Использует [сагу для регистрации и удаления устройства](./smart-home-devices-management/src/main/java/ru/yandex/practicum/smarthome/devicesmanagement/out/messaging/DeviceSagas.java) Также разделены операции чтения и записи
+* Automation Service - сервис автоматизации управления устройствами. Например, включение устройства по расписанию, либо по событию
+* Telemetry History Service - сервис для хранения и получения истории показаний сенсоров
+* Telemetry Service - сервис для получения данных сенсоров
+* Heating System Service - сервис для управления системами отопления
+* Lighting System Service - сервис для управления устройствами освещения
+* Gate System Service - сервис для управления воротами
+* CCTV System Service - сервис для управления видеонаблюдением
+
+### Диаграммы
+[Container diagram](./diagrams/Microservices_Container.puml)
+
+[Component diagram](./diagrams/Microservices_Component.puml)
+
+[Telemetry Service ER diagram](./diagrams/Microservices_Telemetry_ER.puml)
+
+[Devices Management ER diagram](./diagrams/Microservices_Devices_Management_ER.puml)
+
+[Telemetry History Service ER diagram](./diagrams/Microservices_Telemetry_History_ER.puml)
+
+### Описание API
+[OpenApi Devices Management](./api/devices-management-openapi.yaml)
+
+[AsyncApi Devices Management](./api/devices-management-asyncapi.yaml)
+
+[AsyncApi Telemetry Service](./api/telemetry-service-asyncapi.yaml)
+
+[AsyncApi Monolith](./api/monolith-asyncapi.yaml)

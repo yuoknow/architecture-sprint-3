@@ -1,0 +1,408 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/home/{homeId}:
+    post:
+      description: Добавление нового дома
+      tags:
+      - add-home-command-controller
+      operationId: addHome
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id пользователя
+        schema:
+          type: string
+          format: uuid
+      - name: homeId
+        in: path
+        required: true
+        description: id дома
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddHomeCommand'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+    delete:
+      description: Удаление дома
+      tags:
+      - remove-home-command-controller
+      operationId: removeHome
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id пользователя
+        schema:
+          type: string
+          format: uuid
+      - name: homeId
+        in: path
+        required: true
+        description: id дома
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+  /api/devices/{deviceId}:
+    get:
+      description: Получение информации об устройстве
+      tags:
+      - device-query-controller
+      operationId: getDevice
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id пользователя
+        schema:
+          type: string
+          format: uuid
+      - name: deviceId
+        in: path
+        required: true
+        description: id устройства
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Device'
+    post:
+      description: Добавление нового устройства
+      tags:
+      - register-device-command-controller
+      operationId: registerDevice
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id пользователя
+        schema:
+          type: string
+          format: uuid
+      - name: deviceId
+        in: path
+        required: true
+        description: id устройства
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDeviceCommandDto'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+    delete:
+      description: Удаление устройства
+      tags:
+      - remove-device-command-controller
+      operationId: registerDevice_1
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id пользователя
+        schema:
+          type: string
+          format: uuid
+      - name: deviceId
+        in: path
+        required: true
+        description: id устройства
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+  /api/homes:
+    get:
+      description: Получение списка домов
+      tags:
+      - home-query-controller
+      operationId: getAllHomes
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id устройства
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Home'
+  /api/homes/{homeId}:
+    get:
+      description: Получение информации о доме
+      tags:
+      - home-query-controller
+      operationId: getHome
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id пользователя
+        schema:
+          type: string
+          format: uuid
+      - name: homeId
+        in: path
+        required: true
+        description: id дома
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Home'
+  /api/devices:
+    get:
+      description: Получение списка устройств
+      tags:
+      - device-query-controller
+      operationId: getAllDevices
+      parameters:
+      - name: userId
+        in: header
+        required: true
+        description: id пользователя
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "500":
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+components:
+  schemas:
+    ErrorDto:
+      description: Сообщение об ошибке
+      type: object
+      properties:
+        errorCode:
+          description: Код ошибки
+          type: string
+        errorText:
+          description: Текст ошибки
+          type: string
+    AddHomeCommand:
+      description: Команда добавления дома
+      type: object
+      properties:
+        id:
+          description: id дома
+          type: string
+          format: uuid
+        name:
+          description: Название дома
+          type: string
+        address:
+          description: Адрес дома
+          type: string
+    RegisterDeviceCommandDto:
+      description: Команда регистрации нового устройства
+      type: object
+      properties:
+        homeId:
+          description: id дома
+          type: string
+          format: uuid
+        deviceType:
+          description: Тип устройства
+          type: string
+        serialNumber:
+          description: Серийный номер
+          type: string
+        model:
+          description: Модель устройства
+          type: string
+        url:
+          description: Урл по которому обращаться к устройству
+          type: string
+    Home:
+      description: Информация о доме
+      type: object
+      properties:
+        id:
+          description: id дома
+          type: string
+          format: uuid
+        userId:
+          description: id пользователя
+          type: string
+          format: uuid
+        name:
+          description: Название дома
+          type: string
+        address:
+          description: Адрес дома
+          type: string
+    Device:
+      description: Информация об устройстве
+      type: object
+      properties:
+        deviceId:
+          description: id устройства
+          type: string
+          format: uuid
+        homeId:
+          description: id дома
+          type: string
+          format: uuid
+        userId:
+          description: id пользователя
+          type: string
+          format: uuid
+        deviceType:
+          description: Тип устройства
+          type: string
+          enum:
+          - HEATING_SYSTEM
+          - CAMERA
+          - GATE
+          - LAMP
+        model:
+          description: Модель устройства
+          type: string
+        serialNumber:
+          description: Серийный номер
+          type: string
+        url:
+          description: Урл по которому обращаться к устройству
+          type: string

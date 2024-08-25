@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1671820902"
+      author: azhmylev
+      runOnChange: false
+      changes:
+        - createTable:
+            tableName: sensors
+            columns:
+              - column:
+                  name: DEVICE_ID
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: USER_ID
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: MODEL
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: URL
+                  type: VARCHAR(512)
+                  constraints:
+                    nullable: false
+

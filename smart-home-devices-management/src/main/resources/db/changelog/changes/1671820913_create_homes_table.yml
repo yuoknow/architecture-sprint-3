@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1671820913"
+      author: azhmylev
+      runOnChange: false
+      changes:
+        - createTable:
+            tableName: homes
+            columns:
+              - column:
+                  name: HOME_ID
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: USER_ID
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_homes_user
+                    references: users(user_id)
+              - column:
+                  name: NAME
+                  type: VARCHAR(127)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ADDRESS
+                  type: VARCHAR(512)
+                  constraints:
+                    nullable: false
+
