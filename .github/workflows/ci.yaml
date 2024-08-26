@@ -37,10 +37,6 @@ jobs:
         working-directory: ${{ matrix.path }}
         run: ./gradlew build
       -
-        name: ls
-        working-directory: ${{ matrix.path }}/build/libs/
-        run: ls
-      -
         name: Rename jar to app.jar
         working-directory: ${{ matrix.path }}
         run: mkdir -p build/result/ && mv build/libs/*.jar build/result/app.jar

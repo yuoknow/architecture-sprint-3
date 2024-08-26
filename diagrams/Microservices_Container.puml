@@ -9,7 +9,7 @@ Person(user, "Пользователь", "Пользователь умного 
 System(SmartHomeSystem, "SmartHome System", "Экосистема умного дома")
 
 Container_Boundary(SmartHomeSystem, "SmartHome System") {
-  Container(Gateway, "Gateway API", "Kusk", "API Gateway")
+  Container(Gateway, "Gateway API", "Kong", "API Gateway")
 
   Container(Auth, "Auth Service", "Keycloak", "Сервис авторизации и аутентификации")
   Container(DeviceManagement, "Device Management Service", "Java, Spring", "Управление списком устройств пользователя")

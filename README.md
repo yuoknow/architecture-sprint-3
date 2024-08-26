@@ -148,6 +148,8 @@ curl --location --request GET 'localhost:8000/monolith/heating/1'
 ```shell
 docker compose down
 ```
+### Развертывание
+Настроен ci [github actions](./.github/workflows/ci.yaml) 
 
 ### Диаграммы
 [Container diagram](./diagrams/Microservices_Container.puml)

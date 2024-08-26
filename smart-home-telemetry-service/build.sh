@@ -7,7 +7,7 @@ then
   echo "no image tag provided, latest will be used"
   imageTag=latest
 fi
-imageFullName=yuknow/telemetry:$imageTag
+imageFullName=ghcr.io/yuoknow/telemtry-service:$imageTag
 echo "building jar..."
 ./gradlew build bootJar --no-daemon
 mkdir -p build/result/ && mv build/libs/*.jar build/result/

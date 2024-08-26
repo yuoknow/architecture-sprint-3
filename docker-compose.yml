@@ -47,7 +47,7 @@ services:
       - "6432:5432"
 
   monolith:
-    image: yuknow/monolith:latest
+    image: ghcr.io/yuoknow/smarthome-monolith:sprint_3
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
       - SPRING_DATASOURCE_PASSWORD=12345
@@ -61,7 +61,7 @@ services:
       - "8081:8080"
 
   devices-management:
-    image: yuknow/devices_management:latest
+    image: ghcr.io/yuoknow/devices-management:sprint_3
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
       - SPRING_DATASOURCE_PASSWORD=12345
@@ -75,7 +75,7 @@ services:
       - "8082:8080"
 
   telemetry:
-    image: yuknow/telemetry:latest
+    image: ghcr.io/yuoknow/telemetry-service:sprint_3
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
       - SPRING_DATASOURCE_PASSWORD=12345
