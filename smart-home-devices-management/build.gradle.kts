@@ -40,7 +40,14 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:junit-jupiter")
 }
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
+
 
 tasks.withType<Test> {
     useJUnitPlatform()
