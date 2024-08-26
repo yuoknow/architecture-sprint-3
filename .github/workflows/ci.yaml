@@ -21,6 +21,21 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
+        name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      -
+        name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+      -
+        name: Run build with Gradle Wrapper
+        run: ./gradlew build
+      -
+        name: Rename jar to app.jar
+        run: mkdir -p build/result/ && mv build/libs/*.jar build/result/app.jar
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       -
@@ -47,7 +62,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          context: .
+          context: build/result/
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
