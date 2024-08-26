@@ -11,11 +11,11 @@ jobs:
       matrix:
         include:
           - dockerfile: ./smart-home-devices-management/Dockerfile
-            image: ghcr.io/yuknow/devices-management
+            image: ghcr.io/yuoknow/devices-management
           - dockerfile: ./smart-home-telemetry-service/Dockerfile
-            image: ghcr.io/yuknow/telemetry-service
+            image: ghcr.io/yuoknow/telemetry-service
           - dockerfile: ./smart-home-monolith/Dockerfile
-            image: ghcr.io/yuknow/smarthome-monolith
+            image: ghcr.io/yuoknow/smarthome-monolith
     steps:
       -
         name: Checkout
