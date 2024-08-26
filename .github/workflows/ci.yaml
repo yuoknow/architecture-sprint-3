@@ -10,11 +10,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./smart-home-devices-management/building/package/Dockerfile
+          - dockerfile: ./smart-home-devices-management/Dockerfile
             image: ghcr.io/yuknow/devices-management
-          - dockerfile: ./smart-home-telemetry-service/building/package/Dockerfile
+          - dockerfile: ./smart-home-telemetry-service/Dockerfile
             image: ghcr.io/yuknow/telemetry-service
-          - dockerfile: ./smart-home-monolith/building/package/Dockerfile
+          - dockerfile: ./smart-home-monolith/Dockerfile
             image: ghcr.io/yuknow/smarthome-monolith
     steps:
       -
