@@ -38,11 +38,12 @@ jobs:
         run: ./gradlew build
       -
         name: ls
-        working-directory: ${{ matrix.path }}
+        working-directory: ${{ matrix.path }}/build/libs/
         run: ls
       -
         name: Rename jar to app.jar
-        run: mkdir -p ${{ matrix.path }}/build/result/ && mv ${{ matrix.path }}/build/libs/*.jar ${{ matrix.path }}/build/result/app.jar
+        working-directory: ${{ matrix.path }}
+        run: mkdir -p build/result/ && mv build/libs/*.jar build/result/app.jar
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
