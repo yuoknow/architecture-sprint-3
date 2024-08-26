@@ -12,10 +12,13 @@ jobs:
         include:
           - dockerfile: ./smart-home-devices-management/Dockerfile
             image: ghcr.io/yuoknow/devices-management
+            path: ./smart-home-devices-management/
           - dockerfile: ./smart-home-telemetry-service/Dockerfile
             image: ghcr.io/yuoknow/telemetry-service
+            path: ./smart-home-telemetry-service/
           - dockerfile: ./smart-home-monolith/Dockerfile
             image: ghcr.io/yuoknow/smarthome-monolith
+            path: ./smart-home-monolith/
     steps:
       -
         name: Checkout
@@ -31,7 +34,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
       -
         name: Run build with Gradle Wrapper
-        run: ./gradlew build
+        run: ${{ matrix.path }}/gradlew build
       -
         name: Rename jar to app.jar
         run: mkdir -p build/result/ && mv build/libs/*.jar build/result/app.jar
