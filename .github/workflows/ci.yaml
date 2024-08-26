@@ -38,6 +38,7 @@ jobs:
         run: ./gradlew build
       -
         name: Rename jar to app.jar
+        working-directory: ${{ matrix.path }}
         run: mkdir -p build/result/ && mv build/libs/*.jar build/result/app.jar
       -
         name: Set up QEMU
@@ -66,7 +67,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          context: build/result/
+          context: ${{ matrix.path }}/build/result/
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
