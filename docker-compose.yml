@@ -4,6 +4,8 @@ services:
   zookeeper:
     restart: always
     image: docker.io/bitnami/zookeeper:3.8
+    networks:
+      - kong-net
     ports:
       - "2181:2181"
     volumes:
@@ -13,6 +15,8 @@ services:
   kafka:
     restart: always
     image: docker.io/bitnami/kafka:3.3
+    networks:
+      - kong-net
     ports:
       - "9093:9093"
     volumes:
@@ -29,6 +33,8 @@ services:
       - zookeeper
   postgres:
     image: postgres:15.2
+    networks:
+      - kong-net
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
@@ -36,9 +42,16 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     restart: always
     volumes:
-      - /var/pgdata/people:/var/lib/postgresql/data/pgdata
+      - /var/pgdata/postgres:/var/lib/postgresql/data/pgdata
+    ports:
+      - "6432:5432"
+
   monolith:
-    image: yuknow/smart_home_monolith:latest
+    image: yuknow/monolith:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - BOOTSTRAP_SERVERS=http://kafka:9092
     restart: always
     networks:
       - kong-net
@@ -46,10 +59,13 @@ services:
       - postgres
     ports:
       - "8081:8080"
-    links:
-      - "postgres:database"
+
   devices-management:
     image: yuknow/devices_management:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - BOOTSTRAP_SERVERS=http://kafka:9092
     restart: always
     networks:
       - kong-net
@@ -57,10 +73,13 @@ services:
       - postgres
     ports:
       - "8082:8080"
-    links:
-      - "postgres:database"
+
   telemetry:
     image: yuknow/telemetry:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - BOOTSTRAP_SERVERS=http://kafka:9092
     restart: always
     networks:
       - kong-net
@@ -68,52 +87,32 @@ services:
       - postgres
     ports:
       - "8083:8080"
-    links:
-      - "postgres:database"
-  kong-migrations:
-    image: kong/kong-gateway:3.2.1.0
-    command: kong migrations bootstrap
-    container_name: kong-migrations
-    networks:
-      - kong-net
-    depends_on:
-      kong-db:
-        condition: service_healthy
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: localhost
-      KONG_PG_DATABASE: postgres
-      KONG_PG_USER: postgres
-      KONG_PG_PASSWORD: 12345
-    restart: on-failure
-  kong-ce:
-    image: kong/kong-gateway:3.2.1.0
+  kong:
+    image: kong/kong-gateway:latest
     container_name: kong
     networks:
       - kong-net
     restart: on-failure
-    depends_on:
-      kong-db:
-        condition: service_healthy
     environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: localhost
-      KONG_PG_DATABASE: postgres
-      KONG_PG_USER: postgres
-      KONG_PG_PASSWORD: 12345
+      KONG_DATABASE: off
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
       KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
       KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://kong-ce:8001" ]
+      test: [ "CMD", "curl", "-f", "http://kong:8001" ]
       interval: 5s
       timeout: 2s
       retries: 10
+    volumes:
+      - ./kong/declarative:/usr/local/kong/declarative
     ports:
       - "8000-8001:8000-8001/tcp"
       - "8443:8443"
       - "8444:8444"
+
 networks:
   kong-net:
+    driver: bridge
 
 volumes:
   kafka-volume:

@@ -1,0 +1,18 @@
+_format_version: "3.0"
+_transform: false
+
+services:
+  - url: http://monolith:8080/api/
+    name: monolith
+    routes:
+      - name: monolith_route
+        paths:
+          - /monolith
+        strip_path: true
+  - url: http://devices-management:8080/api/devices
+    name: devices-management
+    routes:
+      - name: devices_management_route
+        paths:
+          - /devices
+        strip_path: true

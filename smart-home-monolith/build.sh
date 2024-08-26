@@ -12,5 +12,5 @@ echo "building jar..."
 ./gradlew build bootJar --no-daemon
 mkdir -p build/result/ && mv build/libs/*.jar build/result/
 echo "building docker image..."
-docker build build/result/ -f building/package/Dockerfile -t $imageFullName
+docker build build/result/ -f Dockerfile -t $imageFullName
 echo "image was successfully built $imageFullName"

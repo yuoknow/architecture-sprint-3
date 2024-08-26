@@ -119,6 +119,36 @@ minikube delete
 * Gate System Service - сервис для управления воротами
 * CCTV System Service - сервис для управления видеонаблюдением
 
+### Запуск
+```shell
+docker compose up -d
+```
+Api сервиса devices-management localhost:8000/devices
+
+Api монолита localhost:8000/monolith
+
+Пример добавления устройства:
+```shell
+curl --location 'http://localhost:8000/devices/24f07fd0-f95a-4519-b07f-d0f95ab51979' \
+--header 'userId: a60ae84d-960f-49de-8ae8-4d960ff9de00' \
+--header 'Content-Type: application/json' \
+--data '{
+    "homeId": "0a2675b2-f5a7-49f5-a675-b2f5a779f513",
+    "serialNumber": "serialNumber",
+    "deviceType": "HEATING_SYSTEM",
+    "model": "model",
+    "url": "url"
+}'
+```
+Проверить, что устройство добавилось в монолит:
+```shell
+curl --location --request GET 'localhost:8000/monolith/heating/1'
+```
+### Остановка
+```shell
+docker compose down
+```
+
 ### Диаграммы
 [Container diagram](./diagrams/Microservices_Container.puml)
 

@@ -6,6 +6,16 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./smart-home-devices-management/building/package/Dockerfile
+            image: ghcr.io/yuknow/devices-management
+          - dockerfile: ./smart-home-telemetry-service/building/package/Dockerfile
+            image: ghcr.io/yuknow/telemetry-service
+          - dockerfile: ./smart-home-monolith/building/package/Dockerfile
+            image: ghcr.io/yuknow/smarthome-monolith
     steps:
       -
         name: Checkout
@@ -24,12 +34,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
+        name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ matrix.image }}
+      -
         name: Build and push
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
-          context: smart-home-monolith
+          file: ${{ matrix.dockerfile }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: .
           push: true
-          tags: ghcr.io/yandex-practicum/architecture-sprint-3:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
