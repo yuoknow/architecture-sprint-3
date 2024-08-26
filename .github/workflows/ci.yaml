@@ -37,8 +37,10 @@ jobs:
         working-directory: ${{ matrix.path }}
         run: ./gradlew build
       -
+        name: ls
+        run: ls
+      -
         name: Rename jar to app.jar
-
         run: mkdir -p ${{ matrix.path }}/build/result/ && mv ${{ matrix.path }}/build/libs/*.jar ${{ matrix.path }}/build/result/app.jar
       -
         name: Set up QEMU
