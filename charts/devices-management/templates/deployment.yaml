@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "smart-home-monolith.fullname" . }}
+  name: {{ include "devices-management.fullname" . }}
   labels:
-    {{- include "smart-home-monolith.labels" . | nindent 4 }}
+    {{- include "devices-management.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "smart-home-monolith.selectorLabels" . | nindent 6 }}
+      {{- include "devices-management.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "smart-home-monolith.labels" . | nindent 8 }}
+        {{- include "devices-management.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,18 +27,18 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "smart-home-monolith.serviceAccountName" . }}
+      serviceAccountName: {{ include "devices-management.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           env:
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://smart-home-monolith-postgresql:5432/smart_home
+              value: jdbc:postgresql://{{ .Chart.Name }}-postgresql:5432/devices_management
             - name: SPRING_DATASOURCE_PASSWORD
               value: "12345"
             - name: BOOTSTRAP_SERVERS
-              value: "kafka.kafka:9092"
+              value: "kafka.kafka:9093"
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -47,6 +47,10 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
