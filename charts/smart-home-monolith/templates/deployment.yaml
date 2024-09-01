@@ -32,6 +32,13 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://smart-home-monolith-postgresql:5432/smart_home
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "12345"
+            - name: BOOTSTRAP_SERVERS
+              value: "kafka.kafka:9092"
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

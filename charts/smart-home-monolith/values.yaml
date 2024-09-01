@@ -5,13 +5,12 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/yandex-practicum/architecture-sprint-3
+  repository: ghcr.io/yuoknow/smarthome-monolith
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: sprint_3
 
-imagePullSecrets: 
-  - name: ghcr
+imagePullSecrets: []
 
 nameOverride: ""
 fullnameOverride: ""
@@ -100,10 +99,9 @@ tolerations: []
 
 affinity: {}
 
-
 postgresql:
   enabled: true
   auth:
-    username: your_username
-    password: your_password
+    username: postgres
+    password: "12345"
     database: smart_home

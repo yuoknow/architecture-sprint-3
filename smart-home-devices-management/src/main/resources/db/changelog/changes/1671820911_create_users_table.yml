@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1671820911"
+      author: azhmylev
+      runOnChange: false
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: USER_ID
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: NAME
+                  type: VARCHAR(127)
+                  constraints:
+                    nullable: false
+

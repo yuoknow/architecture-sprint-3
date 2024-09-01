@@ -1,0 +1,76 @@
+@startuml
+title SmartHome Container Diagram
+
+top to bottom direction
+
+!include C4/C4_Container.puml
+
+Person(user, "Пользователь", "Пользователь умного дома")
+System(SmartHomeSystem, "SmartHome System", "Экосистема умного дома")
+
+Container_Boundary(SmartHomeSystem, "SmartHome System") {
+  Container(Gateway, "Gateway API", "Kong", "API Gateway")
+
+  Container(Auth, "Auth Service", "Keycloak", "Сервис авторизации и аутентификации")
+  Container(DeviceManagement, "Device Management Service", "Java, Spring", "Управление списком устройств пользователя")
+  Container(TelemetryHistory, "Telemetry History Service", "Java, Spring", "Сервис данных о телеметрии")
+  Container(HeatingSystem, "Heating System Service", "Java, Spring", "Сервис управления отоплением")
+  Container(LightingSystem, "Lighting System Service", "Java, Spring", "Сервис управления освещением")
+  Container(GateSystem, "Gate System Service", "Java, Spring", "Сервис управления воротами")
+  Container(Automation, "Automation Service", "Java, Spring", "Сервис автоматизации управления устройствами. Запуск по событию, расписанию и тд")
+  Container(CctvSystem, "CCTV System Service", "Java, Spring", "Сервис управления видеонаблюдением")
+  Container(Telemetry, "Telemetry Service", "Java, Spring", "Сервис сбора данных датчиков")
+
+  ContainerDb(DeviceManagementDb, "Device Management DB", "PostgreSQL", "Хранит информацию об устройствах пользователя")
+  ContainerDb(TelemetryDb, "Telemetry DB", "PostgreSQL", "Хранит информацию о зарегистрированных датчиках")
+  ContainerDb(TelemetryHistoryDb, "Telemetry History DB", "Clickhouse", "Хранит телеметрию")
+  ContainerDb(HeatingSystemDb, "Heating System DB", "PostgreSQL", "Хранит информацию о настройках отопления")
+  ContainerDb(LightingSystemDb, "Lighting System DB", "PostgreSQL", "Хранит информацию о настройках освещения")
+  ContainerDb(GateSystemDb, "Gate System DB", "PostgreSQL", "Хранит информацию о настройках ворот")
+  ContainerDb(AutomationDb, "Automation DB", "PostgreSQL", "Хранит информацию о настройках скриптов автоматизаций")
+  ContainerDb(CctvSystemDb, "CCTV System DB", "PostgreSQL", "Хранит информацию о настройках видеонаблюдения")
+
+  ContainerQueue(Kafka, "Kafka", "", "Брокер сообщений")
+}
+System_Boundary(devices, "Устройства и датчики") {
+    System_Ext(sensors, "Sensors", "Датчики")
+    System_Ext(cameras, "Cameras", "Камеры")
+    System_Ext(gates, "Gates", "Ворота")
+    System_Ext(lights, "Lights", "Лампы")
+    System_Ext(heatingSystems, "Heating Systems", "Устройства отопления")
+}
+
+Rel(user, Gateway, "Вызывает систему")
+Rel(Gateway, Auth, "Авторизации/аутентификация")
+Rel(Gateway, DeviceManagement, "Вызывает")
+Rel(Gateway, TelemetryHistory, "Вызывает")
+Rel(Gateway, HeatingSystem, "Вызывает")
+Rel(Gateway, Automation, "Вызывает")
+Rel(Gateway, LightingSystem, "Вызывает")
+Rel(Gateway, CctvSystem, "Вызывает")
+Rel(Gateway, GateSystem, "Вызывает")
+
+Rel(DeviceManagement,DeviceManagementDb,"Чтение/запись данных о списке устройств")
+Rel(Telemetry,TelemetryDb,"Чтение/запись данных о датчиках")
+Rel(TelemetryHistory,TelemetryHistoryDb,"Получение данных телеметрии")
+Rel(HeatingSystem,HeatingSystemDb,"Чтение/запись настроек отопления")
+Rel(LightingSystem,LightingSystemDb,"Чтение/запись настроек отопления")
+Rel(CctvSystem,CctvSystemDb,"Чтение/запись настроек видеонаблюдения")
+Rel(GateSystem,GateSystemDb,"Чтение/запись настроек ворот")
+Rel(Automation,AutomationDb,"Чтение/запись настроек отопления")
+
+Rel(TelemetryHistory,Kafka,"Получает события с данными о телеметрии")
+Rel(Telemetry,Kafka,"Отправляет события с данными о телеметрии")
+Rel(DeviceManagement,Kafka,"Отправляет команды на регистрацию устройств")
+Rel(HeatingSystem,Kafka,"Получение/отправка событий")
+Rel(LightingSystem,Kafka,"Получение/отправка событий")
+Rel(CctvSystem,Kafka,"Получение/отправка событий")
+Rel(GateSystem,Kafka,"Получение/отправка событий")
+Rel(Automation,Kafka,"Получение/отправка событий")
+
+Rel(Telemetry,sensors,"Получает данные датчиков")
+Rel(CctvSystem,cameras,"Управляет камерами / Получает видео с камер")
+Rel(GateSystem,gates,"Управление воротами")
+Rel(LightingSystem,lights,"Управление лампами")
+Rel(HeatingSystem,heatingSystems,"Управление устройствами отопления")
+@enduml

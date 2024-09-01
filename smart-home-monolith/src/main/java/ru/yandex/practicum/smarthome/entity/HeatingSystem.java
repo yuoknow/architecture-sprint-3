@@ -6,15 +6,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "heating_systems")
+import java.util.UUID;
+
 @Data
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "heating_systems")
 public class HeatingSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private UUID externalId;
     
     @Column(nullable = false)
     private boolean isOn;

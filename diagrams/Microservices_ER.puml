@@ -1,0 +1,56 @@
+@startuml
+title SmartHome Microservices ER Diagram
+
+top to bottom direction
+
+entity Device {
+  * id: uuid
+  --
+  * home_id: uuid
+  * type: enum (heating_system, camera, gate, lamp etc...)
+  * name: string
+  * model: string
+  * serial_number: string
+  * status: enum (on, off, turning_off, turning_on, start_registering, start_removing)
+}
+
+entity Home {
+  * id: uuid
+  --
+  * name: string
+  * address: string
+}
+
+entity UserHome {
+  * user_id: uuid
+  * home_id: uuid
+}
+
+entity User {
+  * id: uuid
+  --
+  * name: string
+}
+
+entity Sensor {
+    * device_id: uuid
+    --
+    * user_id: uuid
+    * model: string
+    * url: string
+}
+
+entity TelemetryData {
+    * device_id: uuid
+    * datetime: datetime
+    --
+    * user_id: uuid
+    * data: jsonb
+}
+
+User ||--o{ UserHome
+Home ||--o{ UserHome
+Device }o--|| Home
+Sensor ||--|| Device
+TelemetryData }o--|| Device
+@enduml

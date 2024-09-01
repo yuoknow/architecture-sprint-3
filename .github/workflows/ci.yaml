@@ -6,10 +6,40 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./smart-home-devices-management/Dockerfile
+            image: ghcr.io/yuoknow/devices-management
+            path: ./smart-home-devices-management
+          - dockerfile: ./smart-home-telemetry-service/Dockerfile
+            image: ghcr.io/yuoknow/telemetry-service
+            path: ./smart-home-telemetry-service
+          - dockerfile: ./smart-home-monolith/Dockerfile
+            image: ghcr.io/yuoknow/smarthome-monolith
+            path: ./smart-home-monolith
     steps:
       -
         name: Checkout
         uses: actions/checkout@v4
+      -
+        name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      -
+        name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+      -
+        name: Run build with Gradle Wrapper
+        working-directory: ${{ matrix.path }}
+        run: ./gradlew build
+      -
+        name: Rename jar to app.jar
+        working-directory: ${{ matrix.path }}
+        run: mkdir -p build/result/ && mv build/libs/*.jar build/result/app.jar
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -24,12 +54,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
+        name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ matrix.image }}
+      -
         name: Build and push
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
-          context: smart-home-monolith
+          file: ${{ matrix.dockerfile }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: ${{ matrix.path }}/build/result/
           push: true
-          tags: ghcr.io/yandex-practicum/architecture-sprint-3:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
